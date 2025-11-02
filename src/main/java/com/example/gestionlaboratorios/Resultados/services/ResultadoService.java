@@ -1,5 +1,6 @@
 package com.example.gestionlaboratorios.Resultados.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +13,5 @@ public interface ResultadoService {
     Resultado actualizarResultado(Resultado resultado, Long id);
     Resultado eliminarResultado(Long id);
     Resultado listaResultadoPorUsuario(Long usuarioId, String tipoAnalisis);
+    List<Resultado> listaResultadoPorfiltros(Long usuarioId, Long idLaboratorio, LocalDate fechaMuestra);
 }

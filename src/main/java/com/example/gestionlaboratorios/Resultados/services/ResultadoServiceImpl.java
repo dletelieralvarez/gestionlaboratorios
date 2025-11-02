@@ -1,4 +1,5 @@
 package com.example.gestionlaboratorios.Resultados.services;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,4 +63,11 @@ public class ResultadoServiceImpl implements ResultadoService {
         return lista.isEmpty() ? null : lista.get(0);
     }
 
+    @Override
+    public List<Resultado> listaResultadoPorfiltros(Long usuarioId, Long idLaboratorio, LocalDate fechaMuestra)
+    {           
+        log.debug("Buscando resultados por filtros: usuarioId={}, idLaboratorio={}, fechaMuestra={}", usuarioId, idLaboratorio, fechaMuestra);
+        return resultadoRepository.buscarPorFiltros(usuarioId, idLaboratorio, fechaMuestra);
+
+    }
 }

@@ -2,6 +2,7 @@ package com.example.gestionlaboratorios.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       return http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para simplificar el ejemplo
-            .authorizeHttpRequests(auth -> auth .anyRequest().permitAll()) 
+            .authorizeHttpRequests(auth -> auth 
+              //.requestMatchers("/actuator/health").permitAll()
+              //.requestMatchers(HttpMethod.GET, "/resultados/usuario/**").hasAnyRole("CLIENTE","TECNICO","ADMIN")
+              //.requestMatchers(HttpMethod.POST, "/resultados/**").hasAnyRole("TECNICO","ADMIN")
+              //.requestMatchers(HttpMethod.PUT, "/resultados/**").hasAnyRole("TECNICO","ADMIN")
+              //.requestMatchers(HttpMethod.DELETE, "/resultados/**").hasRole("ADMIN")
+              .anyRequest()
+              .permitAll()
+            ) 
             .httpBasic(Customizer.withDefaults()) // Habilitar autenticación básica (opcional)
             .build();    
     }

@@ -1,5 +1,6 @@
 package com.example.gestionlaboratorios.Resultados.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.hateoas.Link;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,9 +68,14 @@ public class ResultadoController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<ApiResult<List<Resultado>>> retornaResultadoPorUsuario(@PathVariable("usuarioId") Long usuarioId, @RequestParam(required = false) String tipoAnalisis) {        
+    public ResponseEntity<ApiResult<List<Resultado>>> retornaResultadoPorUsuario(@PathVariable("usuarioId") Long usuarioId,
+     @RequestParam(required = false) String tipoAnalisis,
+     @RequestParam(required = false) Long idLaboratorio, 
+     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaMuestra)
+     {       
         try {
-        log.info("Get / retornaResultadoPorUsuario - usuarioId={}, tipoAnalisis={}", usuarioId, tipoAnalisis);
+        log.info("Get / retornaResultadoPorUsuario - usuarioId={}, tipoAnalisis={}, idLaboratorio={}, fechaMuestra={}",
+         usuarioId, tipoAnalisis, idLaboratorio, fechaMuestra);
 
         Usuario usuario = usuarioService.getUsuarioPorId(usuarioId).orElse(null);
         if (usuario == null) {
@@ -76,13 +83,13 @@ public class ResultadoController {
                 .body(new ApiResult<>("Usuario no encontrado con ID: " + usuarioId, null, HttpStatus.NOT_FOUND.value()));
         }
 
-        Resultado resultado = resultadoService.listaResultadoPorUsuario(usuarioId, tipoAnalisis);
-        if (resultado == null) {
+        List<Resultado> resultado = resultadoService.listaResultadoPorfiltros(usuarioId, idLaboratorio, fechaMuestra);
+        if (resultado == null || resultado.isEmpty()) { 
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResult<>("No se encontraron resultados para el usuario con ID: " + usuarioId, null, HttpStatus.NOT_FOUND.value()));
         }
 
-        return ResponseEntity.ok(new ApiResult<>("Resultados encontrados", List.of(resultado), HttpStatus.OK.value()));
+        return ResponseEntity.ok(new ApiResult<>("Resultados encontrados", resultado, HttpStatus.OK.value()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ApiResult<>("Tipo de análisis inválido: " + e.getMessage(), null, HttpStatus.BAD_REQUEST.value()));
