@@ -1,4 +1,4 @@
-package com.example.gestionlaboratorios.controllers;
+package com.example.gestionlaboratorios.comun.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -9,8 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.Profile;
 
-
+@Profile("dev")
 @RestController
 @RequestMapping("/api/oracle-test")
 public class OracleTestController {
@@ -67,4 +68,25 @@ public class OracleTestController {
             return List.of("Error al obtener nombres de tablas: " + e.getMessage());
         }
     }
+
+    @GetMapping("/usuarios")
+    public List<Map<String, Object>> listarUsuarios() {
+        String sql = """
+            SELECT ID, RUT, DV, NOMBRE, EMAIL, ROL_ID
+            FROM USUARIOS
+            ORDER BY ID
+        """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/roles-usuario")
+    public List<Map<String, Object>> listarRolesUsuario() {
+        String sql = """
+            SELECT ID, NOMBRE_ROL
+            FROM ROLES_USUARIO
+            ORDER BY ID
+        """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
 }

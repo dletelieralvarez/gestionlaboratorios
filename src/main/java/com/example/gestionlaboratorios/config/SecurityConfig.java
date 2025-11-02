@@ -15,7 +15,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       return http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para simplificar el ejemplo
-            .authorizeHttpRequests(auth -> auth .anyRequest().permitAll()) // Permitir todas las solicitudes (ajustar según sea necesario)
+            .authorizeHttpRequests(auth -> auth .anyRequest().permitAll()) 
             .httpBasic(Customizer.withDefaults()) // Habilitar autenticación básica (opcional)
             .build();    
     }
