@@ -76,10 +76,10 @@ public class RolController {
                 log.info("Rol encontrado con ID: ", id);
                 //aqui genero link HATEOAS
                 List<Link> links = List.of(
-                    linkTo(methodOn(RolController.class).retornaRolPorId(id)).withSelfRel(),
-                    linkTo(methodOn(RolController.class).retornaTodosLosRoles()).withRel("all"), 
-                    linkTo(methodOn(RolController.class).eliminarRol(id)).withRel("delete"),
-                    linkTo(methodOn(RolController.class).actualizarRol(id, rol)).withRel("update")
+                    linkTo(methodOn(RolController.class).retornaRolPorId(id)).withRel("Retorna Rol por ID"),
+                    linkTo(methodOn(RolController.class).retornaTodosLosRoles()).withRel("Retorna Todos los Roles"), 
+                    linkTo(methodOn(RolController.class).eliminarRol(id)).withRel("Eliminar Rol"),
+                    linkTo(methodOn(RolController.class).actualizarRol(id, rol)).withRel("Actualizar Rol")
                 );
                 //si encuentra el rol por id retorna el mensaje encontrado mas el rol y el estado y links
                 return ResponseEntity.ok(
@@ -139,10 +139,10 @@ public class RolController {
 
             //links HATEOAS
             List<Link> links = List.of(
-                linkTo(methodOn(RolController.class).actualizarRol(id, rol)).withSelfRel(),
-                linkTo(methodOn(RolController.class).retornaTodosLosRoles()).withRel("all"),
-                linkTo(methodOn(RolController.class).eliminarRol(id)).withRel("delete"),
-                linkTo(methodOn(RolController.class).retornaRolPorId(id)).withRel("get")
+                linkTo(methodOn(RolController.class).actualizarRol(id, rol)).withRel("Actualizar Rol"),
+                linkTo(methodOn(RolController.class).retornaTodosLosRoles()).withRel("Retorna Todos los Roles"),
+                linkTo(methodOn(RolController.class).eliminarRol(id)).withRel("Eliminar Rol"),
+                linkTo(methodOn(RolController.class).retornaRolPorId(id)).withRel("Retorna Rol por ID")
             );
 
             //retorna el mensaje con apiresult

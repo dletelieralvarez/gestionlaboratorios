@@ -82,10 +82,10 @@ public class UsuarioController {
                 log.info("Usuario encontrado con ID: ", id);
                 //aqui genero link HATEOAS
                 List<Link> links = List.of(
-                    linkTo(methodOn(UsuarioController.class).retornaUsuarioPorId(id)).withSelfRel(),
-                    linkTo(methodOn(UsuarioController.class).retornaTodosLosUsuarios()).withRel("all"),
-                    linkTo(methodOn(UsuarioController.class).actualizarUsuario(id, usuario)).withRel("update"),
-                    linkTo(methodOn(UsuarioController.class).eliminarUsuario(id)).withRel("delete")
+                    linkTo(methodOn(UsuarioController.class).retornaUsuarioPorId(id)).withRel("Retorna Usuario por ID"),
+                    linkTo(methodOn(UsuarioController.class).retornaTodosLosUsuarios()).withRel("Retorna Todos los Usuarios"),
+                    linkTo(methodOn(UsuarioController.class).actualizarUsuario(id, usuario)).withRel("Actualizar Usuario"),
+                    linkTo(methodOn(UsuarioController.class).eliminarUsuario(id)).withRel("Eliminar Usuario")
                 );
                 //si encuentra el usuario por id retorna el mensaje encontrado mas el usuario y el estado y links
                 return ResponseEntity.ok(
@@ -153,10 +153,10 @@ public class UsuarioController {
 
             //links HATEOAS
             List<Link> links = List.of(
-                linkTo(methodOn(UsuarioController.class).actualizarUsuario(id, usuario)).withSelfRel(),
-                linkTo(methodOn(UsuarioController.class).retornaTodosLosUsuarios()).withRel("all"), 
-                linkTo(methodOn(UsuarioController.class).retornaUsuarioPorId(id)).withRel("get"), 
-                linkTo(methodOn(UsuarioController.class).eliminarUsuario(id)).withRel("delete")
+                linkTo(methodOn(UsuarioController.class).actualizarUsuario(id, usuario)).withRel("Actualizar Usuario"),
+                linkTo(methodOn(UsuarioController.class).retornaTodosLosUsuarios()).withRel("Retorna Todos los Usuarios"),
+                linkTo(methodOn(UsuarioController.class).retornaUsuarioPorId(id)).withRel("Retorna Usuario por ID"),
+                linkTo(methodOn(UsuarioController.class).eliminarUsuario(id)).withRel("Eliminar Usuario")
             );
 
             //retorna el mensaje con apiresult

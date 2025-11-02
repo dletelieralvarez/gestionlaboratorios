@@ -30,10 +30,6 @@ public class ResultadoServiceImpl implements ResultadoService {
     @Override
     public Resultado insertarResultado(Resultado nuevoResultado) {
         log.debug("Servicio : insertarResultado()");
-
-        if(resultadoRepository.existsById((nuevoResultado.getId()))) {
-            throw new IllegalArgumentException("Resultado ya existe con id: " + nuevoResultado.getId());    
-        }
         return resultadoRepository.save(nuevoResultado);
     }
 

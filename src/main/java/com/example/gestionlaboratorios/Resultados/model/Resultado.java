@@ -1,5 +1,6 @@
 package com.example.gestionlaboratorios.Resultados.model;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
@@ -10,73 +11,70 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter @Setter 
 @Table(name = "resultado")
 public class Resultado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "USUARIO_ID", nullable = false, updatable = false)
+    @Column(name = "USUARIO_ID", nullable = false)
     private Long usuarioId; 
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoAnalisis tipo; 
 
+    @Column(name="ID_LABORATORIO", nullable = false)
     private Long idLaboratorio;
 
     @Lob
     //@Column(columnDefinition = "TEXT")
     private String valores;
 
-    private OffsetDateTime fechaMuestra; 
-    private OffsetDateTime fechaResultado; 
+    @Column(name = "FECHA_MUESTRA", nullable = false)
+    private LocalDate fechaMuestra; 
+
+    @Column(name = "FECHA_RESULTADO", nullable = false)
+    private LocalDate fechaResultado; 
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name="ESTADO", nullable = false)
     private EstadoResultado estado = EstadoResultado.Pendiente;
 
-    @Column(nullable = false)
-    private OffsetDateTime creado = OffsetDateTime.now();
+    @Column(name = "CREADO", nullable = false)
+    private OffsetDateTime  creado = OffsetDateTime.now();
 
+    @Column(name = "ACTUALIZADO")
     private OffsetDateTime actualizado;
+
+
+    @PrePersist
+    public void prePersist(){
+        if(fechaMuestra==null){
+            fechaMuestra=LocalDate.now();
+        }
+
+        if(fechaResultado == null && fechaMuestra != null){
+            fechaResultado = fechaMuestra.plusDays(3);
+            estado = EstadoResultado.En_Proceso;
+        }
+    }
 
     @PreUpdate
     public void onUpdate() {
         this.actualizado = OffsetDateTime.now();
     }
 
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
-
-    public Long getUsuarioId() {return usuarioId;}
-    public void setUsuarioId(Long usuarioId) {this.usuarioId = usuarioId;}
-
-    public TipoAnalisis getTipo() {return tipo;}
-    public void setTipo(TipoAnalisis tipo) {this.tipo = tipo;}
-
-    public Long getIdLaboratorio() {return idLaboratorio;}
-    public void setIdLaboratorio(Long idLaboratorio) {this.idLaboratorio = idLaboratorio;}
-
-    public String getValores() {return valores;}
-    public void setValores(String valores) {this.valores = valores;}
-
-    public OffsetDateTime getFechaMuestra() {return fechaMuestra;}
-    public void setFechaMuestra(OffsetDateTime fechaMuestra) {this.fechaMuestra = fechaMuestra;}
-
-    public OffsetDateTime getFechaResultado() {return fechaResultado;}
-    public void setFechaResultado(OffsetDateTime fechaResultado) {this.fechaResultado = fechaResultado;}
-
-    public EstadoResultado getEstado() {return estado;}
-    public void setEstado(EstadoResultado estado) {this.estado = estado;}
-
-    public OffsetDateTime getCreado() {return creado;}
-    public void setCreado(OffsetDateTime creado) {this.creado = creado;}
-    
-    public OffsetDateTime getActualizado() {return actualizado;}
-    public void setActualizado(OffsetDateTime actualizado) {this.actualizado = actualizado;}
 }

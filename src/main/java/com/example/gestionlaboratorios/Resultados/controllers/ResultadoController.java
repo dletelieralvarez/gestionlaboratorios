@@ -107,10 +107,10 @@ public class ResultadoController {
                 log.info("Resultado encontrado con ID: ", id);
                 //aqui genero link HATEOAS
                 List<Link> links = List.of(
-                    linkTo(methodOn(ResultadoController.class).retornaResultadoPorId(id)).withSelfRel(),
-                    linkTo(methodOn(ResultadoController.class).retornaTodosLosResultados()).withRel("all"),
-                    linkTo(methodOn(ResultadoController.class).actualizarResultado(id, resultado)).withRel("update"),
-                    linkTo(methodOn(ResultadoController.class).eliminarResultado(id)).withRel("delete")
+                    linkTo(methodOn(ResultadoController.class).retornaResultadoPorId(id)).withRel("Retorna Resultado por ID"),
+                    linkTo(methodOn(ResultadoController.class).retornaTodosLosResultados()).withRel("Retorna Todos los Resultados"),
+                    linkTo(methodOn(ResultadoController.class).actualizarResultado(id, resultado)).withRel("Actualizar Resultado"),
+                    linkTo(methodOn(ResultadoController.class).eliminarResultado(id)).withRel("Eliminar Resultado")
                 );
                 //si encuentra el resultado por id retorna el mensaje encontrado mas el resultado y el estado y links
                 return ResponseEntity.ok(
@@ -163,18 +163,17 @@ public class ResultadoController {
 
             //solo permitiré modificar la fecha de resultado del examen y el estado
             Resultado actualiza = buscaResultado.get();
-            actualiza.setFechaResultado(resultado.getFechaResultado());
             actualiza.setEstado(resultado.getEstado());
-            //guarda la modificacion de fecha y estado
+            //guarda la modificacion de estado
             log.info("Resultado actualizado, Id : " + id);
             Resultado resultadoActualizado = resultadoService.actualizarResultado(actualiza, id);
 
             //links HATEOAS
             List<Link> links = List.of(
-                linkTo(methodOn(ResultadoController.class).actualizarResultado(id, resultado)).withSelfRel(),
-                linkTo(methodOn(ResultadoController.class).retornaTodosLosResultados()).withRel("all"), 
-                linkTo(methodOn(ResultadoController.class).retornaResultadoPorId(id)).withRel("get"), 
-                linkTo(methodOn(ResultadoController.class).eliminarResultado(id)).withRel("delete")
+                linkTo(methodOn(ResultadoController.class).actualizarResultado(id, resultado)).withRel("Actualizar Resultado"),
+                linkTo(methodOn(ResultadoController.class).retornaTodosLosResultados()).withRel("Retorna Todos los Resultados"),
+                linkTo(methodOn(ResultadoController.class).retornaResultadoPorId(id)).withRel("Retorna Resultado por ID"),
+                linkTo(methodOn(ResultadoController.class).eliminarResultado(id)).withRel("Eliminar Resultado")
             );
 
             //retorna el mensaje con apiresult

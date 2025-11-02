@@ -5,5 +5,5 @@ public enum TipoAnalisis {
     Glucosa,
     PCR, 
     Colesterol, 
-    Orina_Completa    
+    Orina_Completa
 }
