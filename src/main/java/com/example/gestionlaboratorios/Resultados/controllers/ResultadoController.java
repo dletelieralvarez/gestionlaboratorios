@@ -34,7 +34,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/resultados")
+@RequestMapping("/api/resultados")
 public class ResultadoController {
     @Autowired
     private ResultadoService resultadoService;
