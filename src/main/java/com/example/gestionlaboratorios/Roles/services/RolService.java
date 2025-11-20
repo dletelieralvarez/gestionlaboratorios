@@ -11,5 +11,5 @@ public interface RolService {
     Optional<Rol> getRolById(Long id);
     Rol insertarRol(Rol nuevoRol);
     Rol actualizarRol(Rol rolActualizado, Long id);
-    Rol eliminarRol(Long id);
+    Rol eliminarRol(Long id);    
 }
