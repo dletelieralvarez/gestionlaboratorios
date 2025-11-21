@@ -6,9 +6,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.gestionlaboratorios.Usuarios.controllers.UsuariosPortalController;
+import com.example.gestionlaboratorios.Usuarios.dto.LoginUsuarioPortalDTO;
+import com.example.gestionlaboratorios.Usuarios.dto.RegistroUsuarioPortalDTO;
+import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
+import com.example.gestionlaboratorios.Usuarios.services.UsuariosPortalMapper;
 import com.example.gestionlaboratorios.Usuarios.services.UsuariosPortalService;
 import com.example.gestionlaboratorios.comun.model.ApiResult;
+
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -33,7 +39,7 @@ public class UsuariosPortalController {
 
 
     @PostMapping("/registro")
-    public ResponseEntity<ApiResult<UsuariosPortal>> registrar(@RequestBody UsuariosPortal user) {
+    public ResponseEntity<ApiResult<UsuarioPortalDTO>> registrar(@Valid @RequestBody RegistroUsuarioPortalDTO user) {
         
         try{
             log.info("POST /registro - Nuevo usuario: {}", user.getEmail());
@@ -44,41 +50,82 @@ public class UsuariosPortalController {
             nuevo.setApellidos(user.getApellidos());
             nuevo.setEmail(user.getEmail());
             /*service se encarga de encriptar la pass */
-            nuevo.setPasswordHash(user.getPasswordHash());
+            nuevo.setPasswordHash(user.getPassword());
 
             UsuariosPortal usuarioGuardado = usuariosService.registrarCliente(nuevo); 
-            usuarioGuardado.setPasswordHash(null);
+            UsuarioPortalDTO dto =  UsuariosPortalMapper.toDto(usuarioGuardado);
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-            .body(new ApiResult<>("Usuario registrado correctamente", usuarioGuardado, HttpStatus.CREATED.value()));
+            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
+                "Usuario registrado correctamente",
+                dto,
+                HttpStatus.CREATED.value()
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
             
         } catch(IllegalArgumentException e){
             log.warn("Error en la validación al registrar usuario: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResult<>(e.getMessage(), null, HttpStatus.BAD_REQUEST.value()));
+            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
+                "Error en la validación: " + e.getMessage(),
+                null,
+                HttpStatus.BAD_REQUEST.value()
+            );
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
+
         } catch (Exception e) {
             log.error("Error inesperado al registrar usuario: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResult<>("Error interno del servidor", null,
-                            HttpStatus.INTERNAL_SERVER_ERROR.value()));
+            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
+                    "Error al registrar usuario: " + e.getMessage(),
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResult<UsuariosPortal>> login(@RequestBody UsuariosPortal user) {
-        try{
-            UsuariosPortal usuario = usuariosService.login(user.getRut(), user.getPasswordHash()); 
-            usuario.setPasswordHash(null);
+    public ResponseEntity<ApiResult<UsuarioPortalDTO>> login(
+        @Valid @RequestBody LoginUsuarioPortalDTO login) {
+        try {
+            log.info("POST /login - Login usuario portal rut={}", login.getRut());
+            
+            UsuarioPortalDTO  dto = usuariosService.login(
+                    login.getRut(),
+                    login.getPassword()
+            );
 
-            return ResponseEntity.ok(new ApiResult<>("Login Correcto", usuario, HttpStatus.OK.value()));             
-        
-        }catch(IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(new ApiResult<>(e.getMessage(), null, HttpStatus.UNAUTHORIZED.value())); 
-        }catch(Exception e){
-            log.error("Error al hacer login", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiResult<>("Error interno al hacer login", null, HttpStatus.INTERNAL_SERVER_ERROR.value())); 
+            // mapea a DTO
+           // UsuarioPortalDTO dto = UsuariosPortalMapper.toDto(usuario);
+
+            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
+                    "Login correcto",
+                    dto,
+                    HttpStatus.OK.value()
+            );
+
+            return ResponseEntity.ok(respuesta);
+
+        } catch (IllegalArgumentException e) {
+            log.warn("Login inválido para rut {} : {}", login.getRut(), e.getMessage());
+
+            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
+                    "Rut o contraseña incorrecta",
+                    null,
+                    HttpStatus.UNAUTHORIZED.value()
+            );
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+
+        } catch (Exception e) {
+            log.error("Error interno al procesar login", e);
+
+            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
+                    "Error al procesar login: " + e.getMessage(),
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+            );
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 

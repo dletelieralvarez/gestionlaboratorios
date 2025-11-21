@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.gestionlaboratorios.Roles.model.Rol;
 import com.example.gestionlaboratorios.Roles.repository.RolRepository;
+import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
 import com.example.gestionlaboratorios.Usuarios.repository.UsuariosPortalRepository;
 
@@ -87,15 +88,15 @@ public class UsuariosPortalServiceImpl implements UsuariosPortalService {
 
     @Override
     @Transactional
-    public UsuariosPortal login(String rut, String passwordPlano){
+    public UsuarioPortalDTO  login(String rut, String passwordPlano) {
         UsuariosPortal usuario = usuarioRepo.findByRut(rut)
-        .orElseThrow(() -> new IllegalArgumentException("Rut o contraseña inválidos")); 
+           .orElseThrow(() -> new IllegalArgumentException("Rut o contraseña inválidos"));
 
-        if(!passwordEncoder.matches(passwordPlano, usuario.getPasswordHash())){
+        if (!passwordEncoder.matches(passwordPlano, usuario.getPasswordHash())) {
             throw new IllegalArgumentException("Rut o contraseña inválidos");
         }
 
-        return usuario; 
+        return UsuariosPortalMapper.toDto(usuario);
     }
 
 }
