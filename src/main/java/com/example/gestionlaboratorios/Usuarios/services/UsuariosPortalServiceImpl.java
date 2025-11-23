@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.gestionlaboratorios.Roles.model.Rol;
 import com.example.gestionlaboratorios.Roles.repository.RolRepository;
+import com.example.gestionlaboratorios.Usuarios.dto.PerfilUsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.RecuperarPasswordDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
@@ -127,6 +128,28 @@ public class UsuariosPortalServiceImpl implements UsuariosPortalService {
 
         log.info("Se inició recuperación de contraseña para usuario {}", usuario.getEmail()); 
         return tempPassword; 
+    }
+
+    @Override
+    @Transactional()
+    public PerfilUsuarioPortalDTO obtenerPerfil(Long id) {
+        UsuariosPortal usuario = usuarioRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        return UsuariosPortalMapper.toPerfilDto(usuario);
+    }
+
+    @Override
+    @Transactional
+    public PerfilUsuarioPortalDTO actualizarPerfil(Long id, PerfilUsuarioPortalDTO datos) {
+        UsuariosPortal usuario = usuarioRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        
+        UsuariosPortalMapper.applyPerfilDtoToEntity(datos, usuario);
+
+        usuarioRepo.save(usuario);
+
+        return UsuariosPortalMapper.toPerfilDto(usuario);
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.gestionlaboratorios.Usuarios.controllers.UsuariosPortalController;
 import com.example.gestionlaboratorios.Usuarios.dto.LoginUsuarioPortalDTO;
+import com.example.gestionlaboratorios.Usuarios.dto.PerfilUsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.RecuperarPasswordDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.RegistroUsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
@@ -42,7 +43,7 @@ public class UsuariosPortalController {
     @PostMapping("/registro")
     public ResponseEntity<ApiResult<UsuarioPortalDTO>> registrar(@Valid @RequestBody RegistroUsuarioPortalDTO user) {
         
-        try{
+        //try{
             log.info("POST /registro - Nuevo usuario: {}", user.getEmail());
 
             UsuariosPortal nuevo = new UsuariosPortal(); 
@@ -63,26 +64,6 @@ public class UsuariosPortalController {
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
-            
-        } catch(IllegalArgumentException e){
-            log.warn("Error en la validación al registrar usuario: {}", e.getMessage());
-            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
-                "Error en la validación: " + e.getMessage(),
-                null,
-                HttpStatus.BAD_REQUEST.value()
-            );
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
-
-        } catch (Exception e) {
-            log.error("Error inesperado al registrar usuario: {}", e.getMessage());
-            ApiResult<UsuarioPortalDTO> respuesta = new ApiResult<>(
-                    "Error al registrar usuario: " + e.getMessage(),
-                    null,
-                    HttpStatus.INTERNAL_SERVER_ERROR.value()
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
-        }
     }
 
     @PostMapping("/login")
@@ -138,6 +119,7 @@ public class UsuariosPortalController {
             String tempPassword = usuariosService.iniciarRecuperacionPassword(body.getRutOrEmail());
 
             Map<String, String> data = Map.of("tempPassword", tempPassword);
+
 
             return ResponseEntity.ok(
                 new ApiResult<>("Contraseña temporal generada correctamente, su nueva contraseña es : " + tempPassword, data, HttpStatus.OK.value())  
@@ -213,5 +195,32 @@ public class UsuariosPortalController {
                     .body(new ApiResult<>("Error interno al eliminar usuario", null,
                             HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
+    }
+
+    @GetMapping("/perfil/{id}")
+    public ResponseEntity<ApiResult<PerfilUsuarioPortalDTO>> getPerfil(@PathVariable Long id) {
+        PerfilUsuarioPortalDTO dto = usuariosService.obtenerPerfil(id);
+        ApiResult<PerfilUsuarioPortalDTO> result = new ApiResult<>(
+            "Perfil obtenido correctamente",
+            dto,
+            HttpStatus.OK.value()
+        );
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/perfil/{id}")
+    public ResponseEntity<ApiResult<PerfilUsuarioPortalDTO>> updatePerfil(
+            @PathVariable Long id,
+            @RequestBody PerfilUsuarioPortalDTO dto) {
+
+        PerfilUsuarioPortalDTO actualizado = usuariosService.actualizarPerfil(id, dto);
+        ApiResult<PerfilUsuarioPortalDTO> result = new ApiResult<>(
+            "Perfil actualizado correctamente",
+            actualizado,
+            HttpStatus.OK.value()
+        );
+
+        return ResponseEntity.ok(result);
     }
 }

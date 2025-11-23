@@ -8,14 +8,18 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import jakarta.validation.ConstraintViolationException;
 
 import com.example.gestionlaboratorios.comun.model.ApiResult;
 import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+
+    // Cuando falla la validación del DTO (@Valid en el @RequestBody)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResult<List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+
         List<String> errores = ex.getBindingResult()
                                  .getFieldErrors()
                                  .stream()
@@ -31,15 +35,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(respuesta);
     }
 
-//     @ExceptionHandler(HttpMessageNotReadableException.class)
-//     public ResponseEntity<ApiResult<String>> handleJsonParseError(HttpMessageNotReadableException ex) {
-//         ApiResult<String> respuesta = new ApiResult<>(
-//             "Error en el formato del json",
-//              ex.getMostSpecificCause().getMessage(),
-//              HttpStatus.BAD_REQUEST.value()
-//          );
+    // Cuando falla la validación de la entidad al guardar (ConstraintViolationException)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResult<String>> handleConstraintViolation(ConstraintViolationException ex) {
+        String mensaje = ex.getConstraintViolations().iterator().next().getMessage();
 
-//         return ResponseEntity.badRequest().body(respuesta);
-        
-//     }
+        ApiResult<String> respuesta = new ApiResult<>(
+            mensaje,   // mensaje amigable desde el @Message de la anotación
+            null,
+            HttpStatus.BAD_REQUEST.value()
+        );
+
+        return ResponseEntity.badRequest().body(respuesta);
+    }
 }

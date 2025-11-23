@@ -1,5 +1,6 @@
 package com.example.gestionlaboratorios.Usuarios.services;
 
+import com.example.gestionlaboratorios.Usuarios.dto.PerfilUsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
 
@@ -35,4 +36,29 @@ public class UsuariosPortalMapper {
                 .actualizado(entity.getActualizado())
                 .build();
     }
+
+    public static PerfilUsuarioPortalDTO toPerfilDto(UsuariosPortal entity) {
+        if (entity == null) return null;
+
+        PerfilUsuarioPortalDTO dto = new PerfilUsuarioPortalDTO();
+        dto.setId(entity.getId());
+        dto.setNombres(entity.getNombres());
+        dto.setApellidos(entity.getApellidos());
+        dto.setEmail(entity.getEmail());
+        //dto.setTelefono(entity.getTelefono()); 
+
+        return dto;
+    }
+
+    public static void applyPerfilDtoToEntity(PerfilUsuarioPortalDTO dto, UsuariosPortal entity) {
+        if (dto == null || entity == null) return;
+
+        entity.setNombres(dto.getNombres());
+        entity.setApellidos(dto.getApellidos());
+        entity.setEmail(dto.getEmail());
+        //entity.setTelefono(dto.getTelefono()); 
+    }
+
+
+
 }
