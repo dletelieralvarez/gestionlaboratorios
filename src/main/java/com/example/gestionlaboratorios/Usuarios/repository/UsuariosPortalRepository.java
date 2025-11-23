@@ -9,4 +9,5 @@ public interface UsuariosPortalRepository extends JpaRepository<UsuariosPortal, 
     Optional<UsuariosPortal> findByRut(String rut); 
     boolean existsByRut(String rut); 
     boolean existsByEmail(String email); 
+    Optional<UsuariosPortal> findByRutOrEmail(String rut, String email); 
 }

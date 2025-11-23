@@ -12,11 +12,11 @@ import com.example.gestionlaboratorios.Resultados.model.TipoAnalisis;
 @Repository
 public interface ResultadoRepository extends JpaRepository<Resultado, Long> {
 
-    List<Resultado> findByUsuarioId(Long usuarioId);
-    List<Resultado> findByUsuarioIdAndTipo(Long usuarioId, TipoAnalisis tipo);
+    List<Resultado> findByUsuarioPortal_Id(Long usuarioId);
+    List<Resultado> findByUsuarioPortal_IdAndTipo(Long usuarioId, TipoAnalisis tipo);
     
     @Query("SELECT r FROM Resultado r " +
-           "WHERE r.usuarioId = :usuarioId " +
+           "WHERE r.usuarioPortal.id = :usuarioId " +
            "AND (:idLaboratorio IS NULL OR r.idLaboratorio = :idLaboratorio) " +
            "AND (:fechaMuestra IS NULL OR r.fechaMuestra = :fechaMuestra)")
     List<Resultado> buscarPorFiltros(

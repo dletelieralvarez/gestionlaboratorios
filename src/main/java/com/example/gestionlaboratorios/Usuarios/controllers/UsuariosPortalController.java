@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.gestionlaboratorios.Usuarios.controllers.UsuariosPortalController;
 import com.example.gestionlaboratorios.Usuarios.dto.LoginUsuarioPortalDTO;
+import com.example.gestionlaboratorios.Usuarios.dto.RecuperarPasswordDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.RegistroUsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -36,7 +38,6 @@ public class UsuariosPortalController {
 
     @Autowired
     private UsuariosPortalService usuariosService;
-
 
     @PostMapping("/registro")
     public ResponseEntity<ApiResult<UsuarioPortalDTO>> registrar(@Valid @RequestBody RegistroUsuarioPortalDTO user) {
@@ -129,6 +130,28 @@ public class UsuariosPortalController {
         }
     }
 
+    @PostMapping("/recuperar-password")
+    public ResponseEntity<ApiResult<Map<String, String>>> recuperarPassword(@RequestBody RecuperarPasswordDTO body) {
+
+        try {
+            log.info("POST /recuperar-password - {}", body.getRutOrEmail());
+            String tempPassword = usuariosService.iniciarRecuperacionPassword(body.getRutOrEmail());
+
+            Map<String, String> data = Map.of("tempPassword", tempPassword);
+
+            return ResponseEntity.ok(
+                new ApiResult<>("Contraseña temporal generada correctamente, su nueva contraseña es : " + tempPassword, data, HttpStatus.OK.value())  
+            );
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResult<>(e.getMessage(), null, HttpStatus.NOT_FOUND.value()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResult<>("Error al recuperar contraseña", null, HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+    }
+    
     @GetMapping
     public ResponseEntity<ApiResult<List<UsuariosPortal>>> listarUsuarios(){
         List<UsuariosPortal> usuarios = usuariosService.listarTodos(); 

@@ -55,11 +55,11 @@ public class ResultadoServiceImpl implements ResultadoService {
     @Override 
     public Resultado listaResultadoPorUsuario(Long usuarioId, String tipoAnalisis) {
         if (tipoAnalisis == null || tipoAnalisis.isBlank()) {
-            var lista = resultadoRepository.findByUsuarioId(usuarioId);
+            var lista = resultadoRepository.findByUsuarioPortal_Id(usuarioId);
             return lista.isEmpty() ? null : lista.get(0); 
         }
         TipoAnalisis tipo = TipoAnalisis.valueOf(tipoAnalisis.toUpperCase());
-        var lista = resultadoRepository.findByUsuarioIdAndTipo(usuarioId, tipo);
+        var lista = resultadoRepository.findByUsuarioPortal_IdAndTipo(usuarioId, tipo);
         return lista.isEmpty() ? null : lista.get(0);
     }
 

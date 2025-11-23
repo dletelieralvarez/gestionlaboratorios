@@ -17,6 +17,7 @@ public class UsuarioPortalDTO {
     private String nombres;
     private String apellidos;
     private String email;
+    private Long rolId;
     private String nombreRol; //viene de entidad Rol
     private OffsetDateTime creado;
     private OffsetDateTime actualizado;

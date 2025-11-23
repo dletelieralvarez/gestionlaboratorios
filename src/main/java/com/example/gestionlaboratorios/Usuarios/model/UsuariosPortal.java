@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.example.gestionlaboratorios.Roles.model.Rol;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -37,6 +39,7 @@ import jakarta.validation.constraints.Positive;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UsuariosPortal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

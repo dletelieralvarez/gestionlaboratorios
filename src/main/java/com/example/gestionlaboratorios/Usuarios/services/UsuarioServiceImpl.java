@@ -2,6 +2,8 @@ package com.example.gestionlaboratorios.Usuarios.services;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.example.gestionlaboratorios.Usuarios.model.Usuario;
@@ -11,8 +13,16 @@ import com.example.gestionlaboratorios.Usuarios.repository.UsuarioRepository;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    public UsuarioServiceImpl(PasswordEncoder passwordEncoder,
+                              UsuarioRepository usuarioRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     public List<Usuario> getAllUsuarios() {
@@ -33,6 +43,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (nuevoUsuario.getId() != null && usuarioRepository.existsById(nuevoUsuario.getId())) {
             throw new IllegalArgumentException("Ya existe un usuario con id: " + nuevoUsuario.getId());
         }
+
+        nuevoUsuario.setContrasena(passwordEncoder.encode(nuevoUsuario.getContrasena()));
         return usuarioRepository.save(nuevoUsuario);
     }
 

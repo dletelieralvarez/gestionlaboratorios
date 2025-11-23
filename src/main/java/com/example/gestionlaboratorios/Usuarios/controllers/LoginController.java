@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gestionlaboratorios.Usuarios.dto.LoginUsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
-import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
-import com.example.gestionlaboratorios.Usuarios.services.UsuariosPortalMapper;
 import com.example.gestionlaboratorios.Usuarios.services.UsuariosPortalService;
 import com.example.gestionlaboratorios.comun.model.ApiResult;
 

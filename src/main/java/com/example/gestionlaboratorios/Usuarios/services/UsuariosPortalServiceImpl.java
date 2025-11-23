@@ -2,6 +2,7 @@ package com.example.gestionlaboratorios.Usuarios.services;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.gestionlaboratorios.Roles.model.Rol;
 import com.example.gestionlaboratorios.Roles.repository.RolRepository;
+import com.example.gestionlaboratorios.Usuarios.dto.RecuperarPasswordDTO;
 import com.example.gestionlaboratorios.Usuarios.dto.UsuarioPortalDTO;
 import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
 import com.example.gestionlaboratorios.Usuarios.repository.UsuariosPortalRepository;
@@ -97,6 +99,34 @@ public class UsuariosPortalServiceImpl implements UsuariosPortalService {
         }
 
         return UsuariosPortalMapper.toDto(usuario);
+    }
+
+    public String iniciarRecuperacionPassword(String rutOrEmail){
+        Optional<UsuariosPortal> optUsuario = usuarioRepo
+        .findByRutOrEmail(rutOrEmail, rutOrEmail); 
+
+        UsuariosPortal usuario = optUsuario.orElseThrow(
+            ()-> new IllegalArgumentException("No se encontró un usuario con esos datos")
+        );
+
+        //genera password temporal 
+        String tempPassword = UUID.randomUUID()
+                                .toString()
+                                .substring(0, 8);
+
+        //la encripto y guardo 
+        usuario.setPasswordHash(passwordEncoder.encode(tempPassword));
+        usuarioRepo.save(usuario);
+
+        //se envia al correo del usuario 
+        //emailService.sendPasswordRecovery(usuario.getEmail(), tempPassword);
+
+        RecuperarPasswordDTO dto = new RecuperarPasswordDTO(); 
+        dto.setRutOrEmail((rutOrEmail));
+        dto.setTempPassword(tempPassword);
+
+        log.info("Se inició recuperación de contraseña para usuario {}", usuario.getEmail()); 
+        return tempPassword; 
     }
 
 }

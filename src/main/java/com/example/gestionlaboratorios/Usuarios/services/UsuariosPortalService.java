@@ -16,4 +16,6 @@ public interface UsuariosPortalService {
     void eliminarUsuario(Long id); 
     //UsuariosPortal login(String rut, String passwordPlano); 
     UsuarioPortalDTO login(String rut, String passwordPlano);
+    String iniciarRecuperacionPassword(String rutOrEmail);
+    
 }

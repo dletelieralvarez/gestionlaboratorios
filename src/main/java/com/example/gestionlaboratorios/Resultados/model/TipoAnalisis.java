@@ -1,9 +1,9 @@
 package com.example.gestionlaboratorios.Resultados.model;
 
 public enum TipoAnalisis {
-    Hemograma,
-    Glucosa,
+    HEMOGRAMA,
+    GLUCOSA,
     PCR, 
-    Colesterol, 
-    Orina_Completa
+    COLESTEROL, 
+    ORINA_COMPLETA
 }

@@ -3,7 +3,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gestionlaboratorios.Resultados.model.Resultado;
 import com.example.gestionlaboratorios.Resultados.services.ResultadoService;
-import com.example.gestionlaboratorios.Usuarios.model.Usuario;
-import com.example.gestionlaboratorios.Usuarios.services.UsuarioService;
+import com.example.gestionlaboratorios.Usuarios.model.UsuariosPortal;
+import com.example.gestionlaboratorios.Usuarios.services.UsuariosPortalService;
 import com.example.gestionlaboratorios.comun.model.ApiResult;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +39,7 @@ public class ResultadoController {
     private ResultadoService resultadoService;
 
     @Autowired
-    private UsuarioService  usuarioService;
+    private UsuariosPortalService usuariosPortalService;
 
     @GetMapping
     public ResponseEntity<ApiResult<List<Resultado>>> retornaTodosLosResultados() {        
@@ -68,7 +67,8 @@ public class ResultadoController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<ApiResult<List<Resultado>>> retornaResultadoPorUsuario(@PathVariable("usuarioId") Long usuarioId,
+    public ResponseEntity<ApiResult<List<Resultado>>> retornaResultadoPorUsuario(
+     @PathVariable("usuarioId") Long usuarioId,
      @RequestParam(required = false) String tipoAnalisis,
      @RequestParam(required = false) Long idLaboratorio, 
      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaMuestra)
@@ -77,7 +77,7 @@ public class ResultadoController {
         log.info("Get / retornaResultadoPorUsuario - usuarioId={}, tipoAnalisis={}, idLaboratorio={}, fechaMuestra={}",
          usuarioId, tipoAnalisis, idLaboratorio, fechaMuestra);
 
-        Usuario usuario = usuarioService.getUsuarioPorId(usuarioId).orElse(null);
+        UsuariosPortal usuario = usuariosPortalService.buscarPorId(usuarioId).orElse(null);
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResult<>("Usuario no encontrado con ID: " + usuarioId, null, HttpStatus.NOT_FOUND.value()));

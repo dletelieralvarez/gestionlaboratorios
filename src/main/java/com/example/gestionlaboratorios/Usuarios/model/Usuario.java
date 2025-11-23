@@ -60,9 +60,11 @@ public class Usuario {
     @Column(name = "email", unique = true, nullable = false, length = 250)
     private String email;
 
-    @NotBlank(message = "La Contraseña no puede estar vacía")
-    @Size(min=8, max=15, message = "La Contraseña debe tener entre 8 y 15 caracteres")
-    @Column(name = "contrasena", nullable = false, length = 15)
+    // @NotBlank(message = "La Contraseña no puede estar vacía")
+    // @Size(min=8, max=15, message = "La Contraseña debe tener entre 8 y 15 caracteres")
+    // @Column(name = "contrasena", nullable = false, length = 15)
+    // private String contrasena;
+    @Column(name = "contrasena", nullable = false, length = 255)
     private String contrasena;
 
     @ManyToOne
