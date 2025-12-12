@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @NoArgsConstructor
@@ -42,9 +43,9 @@ public class Resultado {
     @JsonIgnore
     private UsuariosPortal usuarioPortal;
 
-    public Long getUsuarioId() {
-        return usuarioPortal != null ? usuarioPortal.getId() : null;
-    }
+    // public Long getUsuarioId() {
+    //     return usuarioPortal != null ? usuarioPortal.getId() : null;
+    // }
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -89,6 +90,22 @@ public class Resultado {
     @PreUpdate
     public void onUpdate() {
         this.actualizado = OffsetDateTime.now();
+    }
+
+    @JsonProperty("usuarioId")
+    public Long getUsuarioId() {
+        return usuarioPortal != null ? usuarioPortal.getId() : null;
+    }
+
+    @JsonProperty("usuarioId")
+    public void setUsuarioId(Long usuarioId) {
+        if (usuarioId == null) {
+            this.usuarioPortal = null;
+        } else {
+            UsuariosPortal u = new UsuariosPortal();
+            u.setId(usuarioId);
+            this.usuarioPortal = u;
+        }
     }
 
 }
